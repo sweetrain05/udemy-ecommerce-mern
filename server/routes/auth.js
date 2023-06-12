@@ -2,7 +2,17 @@ import express from "express";
 
 const router = express.Router();
 
-import { register } from "../controllers/auth.js";
+// controllers
+import { register, login } from "../controllers/auth.js";
 router.post("/register", register);
+router.post("/login", login);
+
+//middlewares
+import { requireSignin } from "../middleswares/auth.js";
+
+// testing
+router.get("/secret", requireSignin, (req, res) => {
+    res.json({ AuthorizedUser: req.user });
+});
 
 export default router;
