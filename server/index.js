@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import morgan from "morgan";
 import authRoutes from "./routes/auth.js"; // node에서는 js를 붙인 full file name을 적어야 한다.
 import categoryRoutes from "./routes/category.js";
+import productRoutes from "./routes/product.js";
 
 // const express = require("express");  // express를 import해오면 필요 없음
 
@@ -24,6 +25,7 @@ app.use(express.json());
 // router middleware
 app.use("/api", authRoutes);
 app.use("/api", categoryRoutes);
+app.use("/api", productRoutes);
 
 // process.env에서 PORT가 있으면 그것을 가져오고, 없으면 8000 소환.
 const port = process.env.PORT || 8000;
