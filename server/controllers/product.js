@@ -83,3 +83,64 @@ export const photo = async (req, res) => {
         console.log(err);
     }
 };
+
+export const remove = async (req, res) => {
+    try {
+        const product = await Product.findByIdAndDelete(
+            req.params.productId
+        ).select("-photo");
+        res.json(product);
+    } catch (err) {
+        console.log(err);
+    }
+};
+
+export const update = async (req, res) => {
+    try {
+        // deconstruct variables
+        const { name, description, price, category, quantity, shipping } =
+            req.fields;
+        const { photo } = req.files;
+
+        // validation
+        switch (true) {
+            case !name.trim():
+                res.json({ error: "Name is required" });
+            case !description.trim():
+                res.json({ error: "Description is required" });
+            case !price.trim():
+                res.json({ error: "Price is required" });
+            case !category.trim():
+                res.json({ error: "Category is required" });
+            case !quantity.trim():
+                res.json({ error: "Quantity is required" });
+            case !shipping.trim():
+                res.json({ error: "Shipping is required" });
+            case photo && photo.size > 1000000:
+                res.json({ error: "Image should be less than 1MB in size" });
+        }
+
+        // update product
+        const product = await Product.findByIdAndUpdate(
+            req.params.productId,
+            {
+                ...req.fields,
+                slug: slugify(name),
+            },
+            { new: true }
+        );
+
+        // convert into Buffer file using fs.readFileSync and add it to product data
+        if (photo) {
+            product.photo.data = fs.readFileSync(photo.path);
+            product.photo.contentType = photo.type;
+        }
+
+        // save the new product to DB and send response
+        await product.save();
+        res.json(product);
+    } catch (err) {
+        console.log(err);
+        return res.status(400).json(err.message);
+    }
+};
