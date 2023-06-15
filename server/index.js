@@ -5,6 +5,7 @@ import morgan from "morgan";
 import authRoutes from "./routes/auth.js"; // node에서는 js를 붙인 full file name을 적어야 한다.
 import categoryRoutes from "./routes/category.js";
 import productRoutes from "./routes/product.js";
+import cors from "cors";
 
 // const express = require("express");  // express를 import해오면 필요 없음
 
@@ -19,6 +20,7 @@ mongoose
     .catch((err) => console.log("DB ERROR => ", err));
 
 // middlewares
+app.use(cors());
 app.use(morgan("dev"));
 app.use(express.json());
 
