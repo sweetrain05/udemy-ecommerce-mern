@@ -1,12 +1,16 @@
 import { useState } from "react";
+import { useAuth } from "../../context/auth";
 import Jumbotron from "../../components/cards/Jumbotron";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
     // state
     const [email, setEmail] = useState("ddd@gmail.com");
     const [password, setPassword] = useState("hihihi");
+    const [auth, setAuth] = useAuth();
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,7 +24,10 @@ export default function Login() {
             if (data?.error) {
                 toast.error(data.error);
             } else {
+                localStorage.setItem("auth", JSON.stringify(data));
+                setAuth({ ...auth, user: data.user, token: data.token });
                 toast.success("Login successful");
+                navigate("/dashboard");
             }
         } catch (err) {
             console.log(err);
