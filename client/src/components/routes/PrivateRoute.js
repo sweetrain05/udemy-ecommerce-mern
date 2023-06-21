@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Outlet } from "react-router-dom";
 import { useAuth } from "../../context/auth";
 import Loading from "./Loading";
+import axios from "axios";
 
 export default function PrivateRoute() {
     // context
@@ -11,12 +12,29 @@ export default function PrivateRoute() {
     const [ok, setOk] = useState(false);
 
     useEffect(() => {
-        if (auth?.token) {
-            setOk(true);
-        } else {
-            setOk(false);
-        }
+        const authCheck = async () => {
+            try {
+                const { data } = await axios.get(`/auth-check`);
+                if (data.ok) {
+                    setOk(true);
+                } else {
+                    setOk(false);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        };
+
+        if (auth?.token) authCheck();
     }, [auth?.token]);
+
+    // useEffect(() => {
+    //     if (auth?.token) {
+    //         setOk(true);
+    //     } else {
+    //         setOk(false);
+    //     }
+    // }, [auth?.token]);
 
     return ok ? <Outlet /> : <Loading />;
 }

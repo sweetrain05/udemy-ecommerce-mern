@@ -22,13 +22,38 @@ export default function Menu() {
                 </li>
 
                 {auth?.user ? (
-                    <>
-                        <li className="nav-item">
-                            <a onClick={logout} className="nav-link pointer">
-                                LOGOUT
+                    <div className="dropdown">
+                        <li>
+                            <a
+                                className="nav-link pointer dropdown-toggle"
+                                data-bs-toggle="dropdown"
+                            >
+                                {auth?.user?.name}
                             </a>
+                            <ul className="dropdown-menu">
+                                <li>
+                                    <NavLink
+                                        className="nav-link"
+                                        to={`/dashboard/${
+                                            auth?.user?.role === 1
+                                                ? "admin"
+                                                : "user"
+                                        }`}
+                                    >
+                                        Dashboard
+                                    </NavLink>
+                                </li>
+                                <li className="nav-item">
+                                    <a
+                                        onClick={logout}
+                                        className="nav-link pointer"
+                                    >
+                                        Logout
+                                    </a>
+                                </li>
+                            </ul>
                         </li>
-                    </>
+                    </div>
                 ) : (
                     <>
                         <li className="nav-item">
