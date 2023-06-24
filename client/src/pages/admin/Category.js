@@ -15,7 +15,7 @@ export default function AdminCategory() {
 
     useEffect(() => {
         loadCategories();
-    }, [categories]);
+    }, []);
 
     const loadCategories = async () => {
         try {
@@ -33,6 +33,7 @@ export default function AdminCategory() {
             if (data?.error) {
                 toast.error(data.error);
             } else {
+                loadCategories();
                 toast.success(`"${data.name}" is created`);
                 setName("");
             }
