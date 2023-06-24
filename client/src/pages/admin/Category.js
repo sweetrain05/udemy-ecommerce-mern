@@ -1,7 +1,7 @@
 import { useAuth } from "../../context/auth";
 import Jumbotron from "../../components/cards/Jumbotron";
 import AdminMenu from "../../components/nav/AdminMenu";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 
@@ -11,6 +11,20 @@ export default function AdminCategory() {
 
     // state
     const [name, setName] = useState("");
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        loadCategories();
+    }, [categories]);
+
+    const loadCategories = async () => {
+        try {
+            const { data } = await axios.get("/categories");
+            setCategories(data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -59,6 +73,17 @@ export default function AdminCategory() {
                                     Submit
                                 </button>
                             </form>
+                        </div>
+                        <hr />
+                        <div className="col">
+                            {categories?.map((c) => (
+                                <button
+                                    key={c._id}
+                                    className="btn btn-outline-primary m-3"
+                                >
+                                    {c.name}
+                                </button>
+                            ))}
                         </div>
                     </div>
                 </div>
