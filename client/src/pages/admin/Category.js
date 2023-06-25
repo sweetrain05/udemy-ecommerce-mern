@@ -39,7 +39,7 @@ export default function AdminCategory() {
                 toast.error(data.error);
             } else {
                 loadCategories();
-                toast.success(`"${data.name}" is created`);
+                toast.success(`"${data.name}" is created.`);
                 setName("");
             }
         } catch (err) {
@@ -51,7 +51,36 @@ export default function AdminCategory() {
     const handleUpdate = async (e) => {
         e.preventDefault();
         try {
-            console.log("updated");
+            const { data } = await axios.put(`/category/${selected._id}`, {
+                name: updatingName,
+            });
+            if (data?.error) {
+                toast.error(data.error);
+            } else {
+                toast.success(`${data.name} is updated.`);
+                setSelected(null);
+                setUpdatingName("");
+                setOpen(false);
+                loadCategories();
+            }
+        } catch (err) {
+            console.log(err);
+            toast.error("Category may already exist. Try again.");
+        }
+    };
+
+    const handleDelete = async (e) => {
+        e.preventDefault();
+        try {
+            const { data } = await axios.delete(`/category/${selected._id}`);
+            if (data?.error) {
+                toast.error(data.error);
+            } else {
+                toast.success(`${data.name} deleted successfully.`);
+                setSelected(null);
+                setOpen(false);
+                loadCategories();
+            }
         } catch (err) {
             console.log(err);
         }
@@ -104,6 +133,8 @@ export default function AdminCategory() {
                                 value={updatingName}
                                 setValue={setUpdatingName}
                                 handleSubmit={handleUpdate}
+                                buttonText={"Update"}
+                                handleDelete={handleDelete}
                             />
                         </Modal>
                     </div>
