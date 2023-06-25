@@ -4,6 +4,8 @@ import AdminMenu from "../../components/nav/AdminMenu";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import CategoryForm from "../../components/forms/CategoryForm";
+import { Modal } from "antd";
 
 export default function AdminCategory() {
     // context
@@ -12,6 +14,9 @@ export default function AdminCategory() {
     // state
     const [name, setName] = useState("");
     const [categories, setCategories] = useState([]);
+    const [open, setOpen] = useState(false);
+    const [selected, setSelected] = useState(null);
+    const [updatingName, setUpdatingName] = useState("");
 
     useEffect(() => {
         loadCategories();
@@ -43,6 +48,15 @@ export default function AdminCategory() {
         }
     };
 
+    const handleUpdate = async (e) => {
+        e.preventDefault();
+        try {
+            console.log("updated");
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     return (
         <>
             <Jumbotron
@@ -59,26 +73,20 @@ export default function AdminCategory() {
                         <div className="p-3 mt-2 mb-2 h4 bg-light">
                             Manage Categories
                         </div>
-                        <div className="p-3">
-                            <form onSubmit={handleSubmit}>
-                                <input
-                                    type="text"
-                                    className="form-control p-3"
-                                    value={name}
-                                    placeholder="Write category name"
-                                    onChange={(e) => {
-                                        setName(e.target.value);
-                                    }}
-                                />
-                                <button className="btn btn-primary mt-3">
-                                    Submit
-                                </button>
-                            </form>
-                        </div>
+                        <CategoryForm
+                            value={name}
+                            setValue={setName}
+                            handleSubmit={handleSubmit}
+                        />
                         <hr />
                         <div className="col">
                             {categories?.map((c) => (
                                 <button
+                                    onClick={() => {
+                                        setOpen(true);
+                                        setSelected(c);
+                                        setUpdatingName(c.name);
+                                    }}
                                     key={c._id}
                                     className="btn btn-outline-primary m-3"
                                 >
@@ -86,6 +94,18 @@ export default function AdminCategory() {
                                 </button>
                             ))}
                         </div>
+                        <Modal
+                            open={open}
+                            onOk={() => setOpen(false)}
+                            onCancel={() => setOpen(false)}
+                            footer={null}
+                        >
+                            <CategoryForm
+                                value={updatingName}
+                                setValue={setUpdatingName}
+                                handleSubmit={handleUpdate}
+                            />
+                        </Modal>
                     </div>
                 </div>
             </div>
