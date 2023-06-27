@@ -5,11 +5,11 @@ import AdminMenu from "../../components/nav/AdminMenu";
 import axios from "axios";
 import { Select } from "antd";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 const { Option } = Select;
 
-export default function AdminProduct() {
+export default function AdminProductUpdate() {
     // context
     const [auth, setAuth] = useAuth();
     // state
@@ -21,8 +21,14 @@ export default function AdminProduct() {
     const [category, setCategory] = useState("");
     const [shipping, setShipping] = useState("");
     const [quantity, setQuantity] = useState("");
+    const [id, setId] = useState("");
     // hook
     const navigate = useNavigate();
+    const params = useParams();
+
+    useEffect(() => {
+        loadProduct();
+    }, []);
 
     useEffect(() => {
         loadCategories();
@@ -37,11 +43,26 @@ export default function AdminProduct() {
         }
     };
 
+    const loadProduct = async () => {
+        try {
+            const { data } = await axios.get(`/product/${params.slug}`);
+            setName(data.name);
+            setDescription(data.description);
+            setPrice(data.price);
+            setCategory(data.category._id);
+            setShipping(data.shipping);
+            setQuantity(data.quantity);
+            setId(data._id);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             const productData = new FormData();
-            productData.append("photo", photo);
+            photo && productData.append("photo", photo);
             productData.append("name", name);
             productData.append("description", description);
             productData.append("price", price);
@@ -49,16 +70,16 @@ export default function AdminProduct() {
             productData.append("quantity", quantity);
             productData.append("shipping", shipping);
 
-            const { data } = await axios.post("/product", productData);
+            const { data } = await axios.put(`/product/${id}`, productData);
             if (data?.error) {
                 toast.error(data.error);
             } else {
-                toast.success(`"${data.name}" is created.`);
+                toast.success(`"${data.name}" is updated.`);
                 navigate("/dashboard/admin/products");
             }
         } catch (err) {
             console.log(err);
-            toast.error("Create product failed. Try again.");
+            toast.error("Update product failed. Try again.");
         }
     };
 
@@ -79,10 +100,19 @@ export default function AdminProduct() {
                             Update Product
                         </div>
 
-                        {photo && (
+                        {photo ? (
                             <div className="text-center">
                                 <img
                                     src={URL.createObjectURL(photo)}
+                                    alt="product photo"
+                                    className="img img-responsive"
+                                    height="200px"
+                                />
+                            </div>
+                        ) : (
+                            <div className="text-center">
+                                <img
+                                    src={`${process.env.REACT_APP_API}/product/photo/${id}`}
                                     alt="product photo"
                                     className="img img-responsive"
                                     height="200px"
@@ -138,6 +168,7 @@ export default function AdminProduct() {
                             onChange={(value) => {
                                 setCategory(value);
                             }}
+                            value={category}
                         >
                             {categories?.map((c) => (
                                 <Option key={c._id} value={c._id}>
@@ -155,6 +186,7 @@ export default function AdminProduct() {
                             onChange={(value) => {
                                 setShipping(value);
                             }}
+                            value={shipping ? "Yes" : "No"}
                         >
                             <Option value="0">No</Option>
                             <Option value="1">Yes</Option>
