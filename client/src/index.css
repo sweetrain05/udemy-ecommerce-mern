@@ -6,3 +6,13 @@
 .pointer {
     cursor: pointer;
 }
+
+.card-button {
+    border-radius: 0px;
+}
+
+.hoverable:hover {
+    border-right: 5px solid #0d6efd;
+    border-bottom: 5px solid #0d6efd;
+    border-radius: 12px;
+}
