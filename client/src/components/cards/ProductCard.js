@@ -3,7 +3,7 @@ import { Badge } from "antd";
 
 export default function ProductCard({ p }) {
     return (
-        <div className="card mb-3 hoverable" style={{ height: "500px" }}>
+        <div className="card mb-3 hoverable">
             <Badge.Ribbon text={`${p?.sold} sold`} color="red">
                 <Badge.Ribbon
                     text={`${
@@ -31,7 +31,7 @@ export default function ProductCard({ p }) {
                         currency: "USD",
                     })}
                 </h4>
-                <p className="card-text">
+                <p className="card-text" style={{ height: "90px" }}>
                     {p?.description?.substring(0, 60)}...
                 </p>
             </div>

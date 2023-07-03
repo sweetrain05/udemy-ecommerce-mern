@@ -20,6 +20,15 @@ export default function Menu() {
                         HOME
                     </NavLink>
                 </li>
+                <li className="nav-item">
+                    <NavLink
+                        className="nav-link"
+                        aria-current="page"
+                        to="/shop"
+                    >
+                        SHOP
+                    </NavLink>
+                </li>
 
                 {auth?.user ? (
                     <div className="dropdown">
