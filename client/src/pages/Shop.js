@@ -2,13 +2,44 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import Jumbotron from "../components/cards/Jumbotron";
 import ProductCard from "../components/cards/ProductCard";
-import { Checkbox } from "antd";
+import { Checkbox, Radio } from "antd";
+import { prices } from "../prices";
 
 export default function Shop() {
     // state
     const [categories, setCategories] = useState([]);
     const [products, setProducts] = useState([]);
-    const [checked, setChecked] = useState([]); // multiple categories
+    const [checked, setChecked] = useState([]); // multiple categories in array
+    const [radio, setRadio] = useState([]);
+
+    useEffect(() => {
+        if (!checked.length || !radio.length) loadProducts();
+    }, []);
+
+    const loadProducts = async () => {
+        try {
+            const { data } = await axios.get("/products");
+            setProducts(data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+    useEffect(() => {
+        if (checked.length || radio.length) loadFilteredProducts();
+    }, [checked, radio]);
+
+    const loadFilteredProducts = async () => {
+        try {
+            const { data } = await axios.post("/filtered-products", {
+                checked,
+                radio,
+            });
+            setProducts(data);
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
     useEffect(() => {
         loadCategories();
@@ -18,19 +49,6 @@ export default function Shop() {
         try {
             const { data } = await axios.get("/categories");
             setCategories(data);
-        } catch (err) {
-            console.log(err);
-        }
-    };
-
-    useEffect(() => {
-        loadProducts();
-    }, []);
-
-    const loadProducts = async () => {
-        try {
-            const { data } = await axios.get("/products");
-            setProducts(data);
         } catch (err) {
             console.log(err);
         }
@@ -50,6 +68,7 @@ export default function Shop() {
     return (
         <>
             <Jumbotron title="Shop" subTitle="Welcome to shopping page" />
+            <pre>{JSON.stringify({ checked, radio }, null, 4)}</pre>
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-md-3">
@@ -67,6 +86,22 @@ export default function Shop() {
                                     {c.name}
                                 </Checkbox>
                             ))}
+                        </div>
+                        <h2 className="p-3 mt-2 mb-2 h4 bg-light text-center">
+                            Filter by Price
+                        </h2>
+                        <div className="row p-2">
+                            <Radio.Group
+                                onChange={(e) => {
+                                    setRadio(e.target.value);
+                                }}
+                            >
+                                {prices?.map((p) => (
+                                    <div key={p._id}>
+                                        <Radio value={p.array}>{p.name}</Radio>
+                                    </div>
+                                ))}
+                            </Radio.Group>
                         </div>
                     </div>
                     <div className="col-md-9">
