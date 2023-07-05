@@ -17,6 +17,11 @@
     border-radius: 12px;
 }
 
+.form-control {
+    -webkit-box-shadow: none !important;
+    outline: -webkit-focus-ring-color auto 0px !important;
+}
+
 /* jumbotron color animation css */
 .jumbotron {
     width: 30wh;
