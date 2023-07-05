@@ -103,12 +103,23 @@ export default function Shop() {
                                 ))}
                             </Radio.Group>
                         </div>
+                        <div className="row p-2">
+                            <button
+                                className="btn btn-outline-secondary"
+                                onClick={() => window.location.reload()}
+                            >
+                                Reset
+                            </button>
+                        </div>
                     </div>
                     <div className="col-md-9">
                         <h2 className="p-3 mt-2 mb-2 h4 bg-light text-center">
                             {products?.length} Products
                         </h2>
-                        <div className="row">
+                        <div
+                            className="row"
+                            style={{ height: "100vh", overflow: "scroll" }}
+                        >
                             {products?.map((p) => (
                                 <div className="col-md-4" key={p._id}>
                                     <ProductCard p={p} />

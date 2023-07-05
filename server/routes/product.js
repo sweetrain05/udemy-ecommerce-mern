@@ -15,6 +15,9 @@ import {
     remove,
     update,
     filteredProducts,
+    productsCount,
+    listProducts,
+    productsSearch,
 } from "../controllers/product.js";
 
 router.post("/product", requireSignin, isAdmin, formidable(), create);
@@ -24,5 +27,8 @@ router.get("/product/photo/:productId", photo);
 router.delete("/product/:productId", requireSignin, isAdmin, remove);
 router.put("/product/:productId", requireSignin, isAdmin, formidable(), update);
 router.post("/filtered-products", filteredProducts);
+router.get("/products-count", productsCount);
+router.get("/list-products/:page", listProducts);
+router.get("/products/search/:keyword", productsSearch);
 
 export default router;
