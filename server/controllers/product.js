@@ -205,3 +205,20 @@ export const productsSearch = async (req, res) => {
         return res.status(400).json(err.message);
     }
 };
+
+export const relatedProducts = async (req, res) => {
+    try {
+        const { productId, categoryId } = req.params;
+        const related = await Product.find({
+            category: categoryId,
+            _id: { $ne: productId },
+        })
+            .select("-photo")
+            .populate("category")
+            .limit(3);
+        res.json(related);
+    } catch (err) {
+        console.log(err);
+        return res.status(400).json(err.message);
+    }
+};
